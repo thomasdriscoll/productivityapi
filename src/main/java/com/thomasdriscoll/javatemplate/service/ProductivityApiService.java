@@ -6,8 +6,8 @@ import com.thomasdriscoll.javatemplate.lib.exceptions.TemplateExceptionEnums;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TemplateService {
-    public TemplateService(TemplateRepo templateRepo){}
+public class ProductivityApiService {
+    public ProductivityApiService(TemplateRepo templateRepo){}
 
     public String dummyFunction(String name) throws DriscollException {
         if(name.equals("Thummus")){

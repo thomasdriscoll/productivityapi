@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thomasdriscoll.javatemplate.lib.exceptions.DriscollException;
 import com.thomasdriscoll.javatemplate.lib.exceptions.TemplateExceptionEnums;
 import com.thomasdriscoll.javatemplate.lib.responses.DriscollResponse;
-import com.thomasdriscoll.javatemplate.service.TemplateService;
+import com.thomasdriscoll.javatemplate.service.ProductivityApiService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(TemplateController.class)
-public class TemplateControllerTest {
+@WebMvcTest(ProductivityApiController.class)
+public class ProductivityApiControllerTest {
     @MockBean
-    private TemplateService templateService;
+    private ProductivityApiService productivityApiService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,7 +49,7 @@ public class TemplateControllerTest {
             String expected = new ObjectMapper().writeValueAsString(new DriscollResponse<>(HttpStatus.OK.value(), nameResponse));
 
             //Mock what needs to be mocked
-            when(templateService.dummyFunction(name)).thenReturn(nameResponse);
+            when(productivityApiService.dummyFunction(name)).thenReturn(nameResponse);
 
             //Do test
             MvcResult result = mockMvc.perform(get(String.format("/%s", name))
@@ -68,7 +68,7 @@ public class TemplateControllerTest {
             String expected = new ObjectMapper().writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
 
             //Mock what needs to be mocked
-            when(templateService.dummyFunction(badName)).thenThrow(exception);
+            when(productivityApiService.dummyFunction(badName)).thenThrow(exception);
 
             //Do test
             MvcResult result = mockMvc.perform(get(String.format("/%s", badName))

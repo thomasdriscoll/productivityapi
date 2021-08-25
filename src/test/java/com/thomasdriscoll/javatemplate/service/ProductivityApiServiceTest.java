@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class TemplateServiceTest {
+class ProductivityApiServiceTest {
     //Complete dummy variable but just wanted to highlight that you'd probably have one of these in your service tests
     @MockBean
     private TemplateRepo templateRepo;
 
     @Autowired
-    private TemplateService templateService;
+    private ProductivityApiService productivityApiService;
 
     @Nested
     @DisplayName("Dummy function service tests")
@@ -34,14 +34,14 @@ class TemplateServiceTest {
 
         @Test
         public void whenValidName_returnNameWithMessage() throws DriscollException {
-            String actual = templateService.dummyFunction(name);
+            String actual = productivityApiService.dummyFunction(name);
             assertEquals(nameResponse, actual);
         }
 
         @Test
         public void whenInvalidName_throwException() throws DriscollException {
             DriscollException excepted = new DriscollException(TemplateExceptionEnums.TESTING_EXCEPTIONS.getStatus(), TemplateExceptionEnums.TESTING_EXCEPTIONS.getMessage());
-            DriscollException actual = assertThrows(DriscollException.class, () -> templateService.dummyFunction(badName));
+            DriscollException actual = assertThrows(DriscollException.class, () -> productivityApiService.dummyFunction(badName));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
             // Good enough for our purposes

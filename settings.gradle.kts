@@ -1,2 +1,2 @@
-rootProject.name = "javatemplate"
+rootProject.name = "productivityapi"
 include("api")
