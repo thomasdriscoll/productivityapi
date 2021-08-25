@@ -1,8 +1,8 @@
-package com.thomasdriscoll.javatemplate.service;
+package com.thomasdriscoll.productivityapi.service;
 
-import com.thomasdriscoll.javatemplate.lib.dao.TemplateRepo;
-import com.thomasdriscoll.javatemplate.lib.exceptions.DriscollException;
-import com.thomasdriscoll.javatemplate.lib.exceptions.TemplateExceptionEnums;
+import com.thomasdriscoll.productivityapi.lib.dao.TemplateRepo;
+import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
+import com.thomasdriscoll.productivityapi.lib.exceptions.TemplateExceptionEnums;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

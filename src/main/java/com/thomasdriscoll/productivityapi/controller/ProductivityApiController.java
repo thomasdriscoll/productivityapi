@@ -1,11 +1,13 @@
-package com.thomasdriscoll.javatemplate.controller;
+package com.thomasdriscoll.productivityapi.controller;
 
-import com.thomasdriscoll.javatemplate.lib.exceptions.DriscollException;
-import com.thomasdriscoll.javatemplate.lib.responses.DriscollResponse;
-import com.thomasdriscoll.javatemplate.service.ProductivityApiService;
+import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
+import com.thomasdriscoll.productivityapi.lib.responses.DriscollResponse;
+import com.thomasdriscoll.productivityapi.service.ProductivityApiService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ProductivityApiController {

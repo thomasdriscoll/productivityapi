@@ -1,7 +1,7 @@
-package com.thomasdriscoll.javatemplate.exception;
+package com.thomasdriscoll.productivityapi.exception;
 
-import com.thomasdriscoll.javatemplate.lib.exceptions.DriscollException;
-import com.thomasdriscoll.javatemplate.lib.responses.DriscollResponse;
+import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
+import com.thomasdriscoll.productivityapi.lib.responses.DriscollResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

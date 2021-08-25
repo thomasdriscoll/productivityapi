@@ -1,4 +1,4 @@
-package com.thomasdriscoll.javatemplate.lib.responses;
+package com.thomasdriscoll.productivityapi.lib.responses;
 
 import lombok.Data;
 

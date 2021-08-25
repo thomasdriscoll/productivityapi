@@ -1,4 +1,4 @@
-package com.thomasdriscoll.javatemplate.lib.dao;
+package com.thomasdriscoll.productivityapi.lib.dao;
 
 import org.springframework.stereotype.Repository;
 

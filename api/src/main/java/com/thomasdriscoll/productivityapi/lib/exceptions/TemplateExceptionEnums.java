@@ -1,4 +1,4 @@
-package com.thomasdriscoll.javatemplate.lib.exceptions;
+package com.thomasdriscoll.productivityapi.lib.exceptions;
 
 import org.springframework.http.HttpStatus;
 

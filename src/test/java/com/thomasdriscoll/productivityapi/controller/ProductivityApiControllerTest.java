@@ -1,10 +1,10 @@
-package com.thomasdriscoll.javatemplate.controller;
+package com.thomasdriscoll.productivityapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thomasdriscoll.javatemplate.lib.exceptions.DriscollException;
-import com.thomasdriscoll.javatemplate.lib.exceptions.TemplateExceptionEnums;
-import com.thomasdriscoll.javatemplate.lib.responses.DriscollResponse;
-import com.thomasdriscoll.javatemplate.service.ProductivityApiService;
+import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
+import com.thomasdriscoll.productivityapi.lib.exceptions.TemplateExceptionEnums;
+import com.thomasdriscoll.productivityapi.lib.responses.DriscollResponse;
+import com.thomasdriscoll.productivityapi.service.ProductivityApiService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

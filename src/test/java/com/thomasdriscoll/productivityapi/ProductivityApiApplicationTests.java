@@ -1,4 +1,4 @@
-package com.thomasdriscoll.javatemplate;
+package com.thomasdriscoll.productivityapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
