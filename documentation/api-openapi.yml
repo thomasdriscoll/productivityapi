@@ -1,18 +1,18 @@
 openapi: 3.0.1
 info:
-  title: OpenAPI definition
-  version: v0
+  title: Productivity API
+  version: v1
 servers:
   - url: 'http://localhost:8018'
     description: Generated server url
 paths:
-  '/{name}':
+  '/user/{userId}/board':
     get:
       tags:
-        - template-controller
-      operationId: dummyFunction
+        - board-controller
+      operationId: getBoard
       parameters:
-        - name: name
+        - name: userId
           in: path
           required: true
           schema:
@@ -23,10 +23,151 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DriscollResponseString'
+                $ref: '#/components/schemas/BoardResponse'
+  '/user/{userId}/tasks':
+    post:
+      tags:
+        - task-controller
+      operationId: createTask
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Task Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+  '/user/{userId}/tasks/{taskId}':
+    get:
+      tags:
+        - task-controller
+      operationId: getTask
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+    put:
+      tags:
+        - task-controller
+      operationId: updateTask
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+    delete:
+      tags:
+        - task-controller
+        - internal use only
+      operationId: deleteTask
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+          content:
+            '*/*':
+              schema:
+                $ref:
+  '/user/{userId}/tasks/{taskId}/status/{statusTask}':
+    put:
+      tags:
+        - task-controller
+      operationId: updateTask
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: statusTask
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
 components:
   schemas:
-    DriscollResponseString:
+    Board:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+    BoardResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/Board'
+    DeleteResponse:
       type: object
       properties:
         status:
@@ -34,3 +175,44 @@ components:
           format: int32
         data:
           type: string
+          example: null
+    Task:
+      type: object
+      properties:
+        titleTask:
+          type: string
+          example: "Create template Go app"
+        descriptionTask:
+          type: string
+          example: "Want to create a Go app that I can reuse over and over to quickly get a project up and running"
+        priorityTask:
+          type: string
+          example: "high"
+        estimatedTimeTask:
+          type: integer
+          format: int32
+          example: 75
+        typeTask:
+          type: string
+          enum:
+            - "physical"
+            - "spiritual"
+            - "emotional"
+            - "intellectual"
+        statusTask:
+          type: string
+          enum:
+            - "backlog"
+            - "to-do"
+            - "in-progress"
+            - "blocked"
+            - "done"
+    TaskResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/Task'
+
