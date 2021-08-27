@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(TaskController.class)
-class TaskDtoControllerTest {
+class TaskControllerTest {
     @MockBean
     private TaskService taskService;
 
