@@ -2,7 +2,6 @@ package com.thomasdriscoll.productivityapi.controller;
 
 import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
 import com.thomasdriscoll.productivityapi.lib.responses.DriscollResponse;
-import com.thomasdriscoll.productivityapi.service.ProductivityApiService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

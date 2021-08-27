@@ -187,7 +187,10 @@ components:
           example: "Want to create a Go app that I can reuse over and over to quickly get a project up and running"
         priorityTask:
           type: string
-          example: "high"
+          enum:
+            - "high"
+            - "medium"
+            - "low"
         estimatedTimeTask:
           type: integer
           format: int32

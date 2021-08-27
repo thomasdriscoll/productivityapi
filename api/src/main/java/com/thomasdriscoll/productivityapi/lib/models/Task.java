@@ -1,4 +1,4 @@
 package com.thomasdriscoll.productivityapi.lib.models;
 
-public class TemplateModel {
+public class Task {
 }
