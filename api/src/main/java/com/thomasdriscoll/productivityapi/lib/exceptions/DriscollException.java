@@ -12,16 +12,16 @@ import org.springframework.http.HttpStatus;
         creatorVisibility = JsonAutoDetect.Visibility.NONE
 )
 public class DriscollException extends Exception {
-        @JsonProperty("status")
-        private final HttpStatus status;
-        @JsonProperty("message")
-        private final String message;
+    @JsonProperty("status")
+    private final HttpStatus status;
+    @JsonProperty("message")
+    private final String message;
 
-        public DriscollException(HttpStatus status, String message) {
-            super(message);
-            this.status = status;
-            this.message = message;
-        }
+    public DriscollException(HttpStatus status, String message) {
+        super(message);
+        this.status = status;
+        this.message = message;
+    }
 
     public HttpStatus getStatus() {
         return status;

@@ -1,5 +1,8 @@
 package com.thomasdriscoll.productivityapi.lib.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum PriorityTask {
     HIGH ("high"),
     MEDIUM ("medium"),

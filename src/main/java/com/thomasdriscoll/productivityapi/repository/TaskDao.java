@@ -3,6 +3,7 @@ package com.thomasdriscoll.productivityapi.repository;
 import com.thomasdriscoll.productivityapi.lib.enums.PriorityTask;
 import com.thomasdriscoll.productivityapi.lib.enums.StatusTask;
 import com.thomasdriscoll.productivityapi.lib.enums.TypeTask;
+import com.thomasdriscoll.productivityapi.lib.models.TaskDto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -39,4 +40,8 @@ public class TaskDao {
     @Column(name="status_task")
     @Enumerated(EnumType.STRING)
     private StatusTask statusTask;
+
+    public TaskDto toDto(){
+        return null;
+    }
 }

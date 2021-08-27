@@ -1,7 +1,7 @@
 package com.thomasdriscoll.productivityapi.controller;
 
 import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
-import com.thomasdriscoll.productivityapi.lib.models.Task;
+import com.thomasdriscoll.productivityapi.lib.models.TaskDto;
 import com.thomasdriscoll.productivityapi.lib.models.TaskRequest;
 import com.thomasdriscoll.productivityapi.lib.responses.DriscollResponse;
 import com.thomasdriscoll.productivityapi.service.TaskService;
@@ -19,9 +19,9 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<DriscollResponse<Task>> createTask(
+    public ResponseEntity<DriscollResponse<TaskDto>> createTask(
             @PathVariable String userId,
             @RequestBody TaskRequest newTaskRequest) throws DriscollException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new DriscollResponse<Task>(HttpStatus.CREATED.value(), taskService.createTask(userId, newTaskRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new DriscollResponse<TaskDto>(HttpStatus.CREATED.value(), taskService.createTask(userId, newTaskRequest)));
     }
 }

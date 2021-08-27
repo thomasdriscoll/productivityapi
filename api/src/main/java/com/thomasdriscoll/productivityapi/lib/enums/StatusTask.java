@@ -1,5 +1,8 @@
 package com.thomasdriscoll.productivityapi.lib.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum StatusTask {
     BACKLOG ("backlog"),
     TODO("todo"),

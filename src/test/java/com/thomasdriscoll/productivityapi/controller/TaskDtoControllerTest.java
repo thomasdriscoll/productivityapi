@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(TaskController.class)
-class TaskControllerTest {
+class TaskDtoControllerTest {
     @MockBean
     private TaskService taskService;
 
@@ -40,7 +40,7 @@ class TaskControllerTest {
 
     @Nested
     @DisplayName("Create Task tests")
-    class CreateTaskRequestTests {
+    class CreateTaskDtoRequestTests {
         @Test
         public void givenTask_whenCreateTask_thenReturn201() throws Exception {
             String expected = new ObjectMapper().writeValueAsString(new DriscollResponse<>(HttpStatus.CREATED.value(), TASK_REQUEST));

@@ -2,7 +2,7 @@ package com.thomasdriscoll.productivityapi.service;
 
 import com.thomasdriscoll.productivityapi.lib.dao.TemplateRepo;
 import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
-import com.thomasdriscoll.productivityapi.lib.exceptions.TemplateExceptionEnums;
+import com.thomasdriscoll.productivityapi.lib.exceptions.TaskExceptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class ProductivityApiServiceTest {
 
         @Test
         public void whenInvalidName_throwException() throws DriscollException {
-            DriscollException excepted = new DriscollException(TemplateExceptionEnums.TESTING_EXCEPTIONS.getStatus(), TemplateExceptionEnums.TESTING_EXCEPTIONS.getMessage());
+            DriscollException excepted = new DriscollException(TaskExceptions.TESTING_EXCEPTIONS.getStatus(), TaskExceptions.TESTING_EXCEPTIONS.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> productivityApiService.dummyFunction(badName));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents

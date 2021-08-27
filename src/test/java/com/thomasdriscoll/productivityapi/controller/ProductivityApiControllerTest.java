@@ -2,7 +2,7 @@ package com.thomasdriscoll.productivityapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
-import com.thomasdriscoll.productivityapi.lib.exceptions.TemplateExceptionEnums;
+import com.thomasdriscoll.productivityapi.lib.exceptions.TaskExceptions;
 import com.thomasdriscoll.productivityapi.lib.responses.DriscollResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -63,7 +63,7 @@ public class ProductivityApiControllerTest {
         @Test
         public void givenInvalidName_whenGetName_thenReturnException() throws Exception, DriscollException {
             //Variables local to test
-            DriscollException exception = new DriscollException(TemplateExceptionEnums.TESTING_EXCEPTIONS.getStatus(), TemplateExceptionEnums.TESTING_EXCEPTIONS.getMessage());
+            DriscollException exception = new DriscollException(TaskExceptions.TESTING_EXCEPTIONS.getStatus(), TaskExceptions.TESTING_EXCEPTIONS.getMessage());
             String expected = new ObjectMapper().writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
 
             //Mock what needs to be mocked

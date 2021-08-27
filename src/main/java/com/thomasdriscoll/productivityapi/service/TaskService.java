@@ -1,7 +1,7 @@
 package com.thomasdriscoll.productivityapi.service;
 
 import com.thomasdriscoll.productivityapi.lib.exceptions.DriscollException;
-import com.thomasdriscoll.productivityapi.lib.models.Task;
+import com.thomasdriscoll.productivityapi.lib.models.TaskDto;
 import com.thomasdriscoll.productivityapi.lib.models.TaskRequest;
 import com.thomasdriscoll.productivityapi.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,8 @@ public class TaskService {
 
     public TaskService(TaskRepository taskRepository){}
 
-    public Task createTask(String userId, TaskRequest newTaskRequest) throws DriscollException {
+    public TaskDto createTask(String userId, TaskRequest newTaskRequest) throws DriscollException {
+//        validateTask(newTaskRequest);
         return null;
     }
 

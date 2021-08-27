@@ -3,13 +3,13 @@ package com.thomasdriscoll.productivityapi.lib.exceptions;
 import org.springframework.http.HttpStatus;
 
 //This is just a sample enum for exceptions; delete!
-public enum TemplateExceptionEnums {
+public enum TaskExceptions {
     TESTING_EXCEPTIONS(HttpStatus.BAD_REQUEST, "You done goofed");
 
     private final HttpStatus status;
     private final String message;
 
-    TemplateExceptionEnums(HttpStatus status, String message) {
+    TaskExceptions(HttpStatus status, String message) {
         this.status = status;
         this.message = message;
     }
