@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.projectlombok:lombok:1.18.16")
+    implementation("org.projectlombok:lombok:1.18.20")
 }
 
 tasks.bootJar{

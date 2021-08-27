@@ -3,7 +3,7 @@ package com.thomasdriscoll.productivityapi.lib.enums;
 import lombok.Getter;
 
 @Getter
-public enum StatusTask {
+public enum StatusType {
     BACKLOG ("backlog"),
     TODO("todo"),
     INPROGRESS ("in-progress"),
@@ -12,7 +12,7 @@ public enum StatusTask {
 
     private final String status;
 
-    StatusTask(String status){
+    StatusType(String status){
         this.status = status;
     }
 }
