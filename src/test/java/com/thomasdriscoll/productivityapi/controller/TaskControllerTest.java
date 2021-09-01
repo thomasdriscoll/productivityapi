@@ -91,6 +91,7 @@ class TaskControllerTest {
             .build();
 
     private final TaskDto TASK_DTO = TaskDto.builder()
+            .userId(USER_ID)
             .titleTask(TITLE_TASK)
             .descriptionTask(DESCRIPTION_TASK)
             .priorityTask(PriorityTask.HIGH)

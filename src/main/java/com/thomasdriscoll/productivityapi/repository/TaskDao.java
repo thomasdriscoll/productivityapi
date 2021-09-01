@@ -13,7 +13,7 @@ public class TaskDao {
     @Id
     @GeneratedValue
     @Column(name="id")
-    private Long taskId = null;
+    private Long taskId;
 
     @Column(name="user_id")
     private String userId;
@@ -39,27 +39,13 @@ public class TaskDao {
     @Enumerated(EnumType.STRING)
     private StatusType statusType;
 
-    public TaskDto toDto(){
-        return null;
-    }
-
-    public TaskDao(
-            Long taskId,
-            String userId,
-            String titleTask,
-            String descriptionTask,
-            PriorityTask priorityTask,
-            Integer estimatedTimeTask,
-            TypeTask typeTask,
-            StatusType statusType
-    ) {
-        this.taskId = taskId;
-        this.userId = userId;
-        this.titleTask = titleTask;
-        this.descriptionTask = descriptionTask;
-        this.priorityTask = priorityTask;
-        this.estimatedTimeTask = estimatedTimeTask;
-        this.typeTask = typeTask;
-        this.statusType = statusType;
+    public TaskDao(TaskDto dto) {
+        this.userId = dto.getUserId();
+        this.titleTask = dto.getTitleTask();
+        this.descriptionTask = dto.getDescriptionTask();
+        this.priorityTask = dto.getPriorityTask();
+        this.estimatedTimeTask = dto.getEstimatedTimeTask();
+        this.typeTask = dto.getTypeTask();
+        this.statusType = dto.getStatusType();
     }
 }

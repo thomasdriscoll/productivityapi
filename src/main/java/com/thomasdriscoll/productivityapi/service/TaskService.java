@@ -13,8 +13,12 @@ public class TaskService {
     public TaskService(TaskRepository taskRepository){}
 
     public TaskDto createTask(String userId, TaskRequest newTaskRequest) throws DriscollException {
-//        validateTask(newTaskRequest);
+        validateTask(newTaskRequest);
         return null;
+    }
+
+    private void validateTask(TaskRequest request) throws DriscollException {
+        
     }
 
 }
