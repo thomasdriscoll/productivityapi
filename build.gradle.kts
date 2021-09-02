@@ -38,9 +38,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+    testImplementation("com.h2database:h2:1.3.148")
     implementation("org.springdoc:springdoc-openapi-ui:1.4.8")
     implementation("org.projectlombok:lombok:1.18.20")
-    implementation(project(":api"))
 }
 
 tasks.withType<Test> {

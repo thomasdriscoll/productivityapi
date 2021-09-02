@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService {
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
-    public TaskService(TaskRepository taskRepository){}
+    public TaskService(TaskRepository taskRepository){
+        this.taskRepository = taskRepository;
+    }
 
     public TaskDto createTask(String userId, TaskRequest newTaskRequest) throws DriscollException {
         validateTask(newTaskRequest);
