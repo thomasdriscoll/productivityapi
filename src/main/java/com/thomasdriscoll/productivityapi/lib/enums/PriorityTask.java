@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum PriorityTask {
-    HIGH ("high"),
-    MEDIUM ("medium"),
-    LOW ("low");
+    HIGH ("HIGH"),
+    MEDIUM ("MEDIUM"),
+    LOW ("LOW");
 
     private final String priority;
 

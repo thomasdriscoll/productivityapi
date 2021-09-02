@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum StatusType {
-    BACKLOG ("backlog"),
-    TODO("todo"),
-    INPROGRESS ("in-progress"),
-    BLOCKED ("blocked"),
-    DONE ("done");
+    BACKLOG ("BACKLOG"),
+    TODO("TODO"),
+    INPROGRESS ("INPROGRESS"),
+    BLOCKED ("BLOCKED"),
+    DONE ("DONE");
 
     private final String status;
 

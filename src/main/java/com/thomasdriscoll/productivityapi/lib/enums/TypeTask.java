@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum TypeTask {
-    PHYSICAL("physical"),
-    SPIRITUAL("spiritual"),
-    EMOTIONAL("emotional"),
-    INTELLECTUAL("intellectual");
+    PHYSICAL("PHYSICAL"),
+    SPIRITUAL("SPIRITUAL"),
+    EMOTIONAL("EMOTIONAL"),
+    INTELLECTUAL("INTELLECTUAL");
 
     private final String type;
 

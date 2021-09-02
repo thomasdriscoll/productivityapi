@@ -1,6 +1,5 @@
 package com.thomasdriscoll.productivityapi.service;
 
-import com.thomasdriscoll.productivityapi.controller.TaskController;
 import com.thomasdriscoll.productivityapi.lib.enums.PriorityTask;
 import com.thomasdriscoll.productivityapi.lib.enums.StatusType;
 import com.thomasdriscoll.productivityapi.lib.enums.TypeTask;
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(TaskController.class)
+@SpringBootTest
 class TaskServiceTest {
     @MockBean
     TaskRepository taskRepository;
@@ -87,12 +86,15 @@ class TaskServiceTest {
             .statusType(StatusType.BACKLOG)
             .build();
 
+    private final TaskDao TASK_DAO = new TaskDao(TASK_DTO);
+
     @Nested
     @DisplayName("Create Task service tests")
     class CreateTaskTests {
 
         @Test
         public void validateTaskRequest_goldenPath() throws Exception {
+            when(taskRepository.save(TASK_DAO)).thenReturn(TASK_DAO);
             TaskDto actual = taskService.createTask(USER_ID, TASK_REQUEST);
             assertEquals(TASK_DTO, actual);
         }
@@ -135,18 +137,6 @@ class TaskServiceTest {
             TaskDao TASK_DAO  = new TaskDao(TASK_DTO);
             TaskDto actual = taskService.createTask(USER_ID, TASK_REQUEST);
             verify(taskRepository).save(TASK_DAO);
-        }
-
-        @Test
-        public void validTask_saveToRepository_callToRepoFails_throwsWith400() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.TASK_FAILED_TO_SAVE.getStatus(), TaskExceptions.TASK_FAILED_TO_SAVE.getMessage());
-            TaskDao TASK_DAO  = new TaskDao(TASK_DTO);
-            when(taskRepository.save(TASK_DAO)).thenReturn(null);
-
-            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.createTask(USER_ID, TASK_REQUEST_INVALID_STATUS));
-
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
         }
     }
 }
