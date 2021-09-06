@@ -4,11 +4,13 @@ import com.thomasdriscoll.productivityapi.lib.enums.PriorityTask;
 import com.thomasdriscoll.productivityapi.lib.enums.StatusType;
 import com.thomasdriscoll.productivityapi.lib.enums.TypeTask;
 import com.thomasdriscoll.productivityapi.lib.models.TaskDto;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="t_tasks")
+@Getter
 public class TaskDao {
     @Id
     @GeneratedValue

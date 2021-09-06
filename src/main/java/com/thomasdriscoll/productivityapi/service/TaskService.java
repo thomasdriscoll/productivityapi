@@ -12,6 +12,8 @@ import com.thomasdriscoll.productivityapi.repository.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class TaskService {
     private TaskRepository taskRepository;
@@ -27,7 +29,11 @@ public class TaskService {
     }
 
     public TaskDto getTaskById(String userId, Long taskId) throws DriscollException {
-        return null;
+        Optional<TaskDao> dao = taskRepository.findByUserIdAndTaskId(userId, taskId);
+        if(dao.isEmpty()){
+            throw new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+        }
+        return new TaskDto(dao.get());
     }
 
     private TaskDto validateTask(String userId, TaskRequest request) throws DriscollException {

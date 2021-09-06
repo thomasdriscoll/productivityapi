@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -39,6 +41,8 @@ class TaskServiceTest {
     private final Integer ESTIMATED_TIME_TASK = 75;
     private final String TASK_TYPE = TypeTask.INTELLECTUAL.getType();
     private final String STATUS_TYPE = StatusType.BACKLOG.getStatus();
+    private final Long TASK_ID = 1234567890L;
+    private final Long BAD_TASK_ID = 9876543210L;
 
     private final TaskRequest TASK_REQUEST = TaskRequest.builder()
             .titleTask(TITLE_TASK)
@@ -136,6 +140,29 @@ class TaskServiceTest {
         public void validTask_saveToRepository_goldenPath() throws Exception {
             TaskDto actual = taskService.createTask(USER_ID, TASK_REQUEST);
             verify(taskRepository).save(any(TaskDao.class));
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Task By Id Service tests")
+    class GetTaskByIdTests {
+        @Test
+        public void validTaskId_thenReturnTaskDto() throws Exception {
+            when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.of(TASK_DAO));
+            TaskDto actual = taskService.getTaskById(USER_ID, TASK_ID);
+            assertEquals(TASK_DTO, actual);
+        }
+
+        @Test
+        public void invalidTaskId_throw404Error() throws Exception {
+            DriscollException excepted = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+
+            when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.empty());
+
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.getTaskById(USER_ID, BAD_TASK_ID));
+
+            assertEquals(excepted.getStatus(), actual.getStatus());
+            assertEquals(excepted.getMessage(), actual.getMessage());
         }
     }
 }
