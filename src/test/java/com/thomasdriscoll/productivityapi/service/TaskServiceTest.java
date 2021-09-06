@@ -134,9 +134,8 @@ class TaskServiceTest {
 
         @Test
         public void validTask_saveToRepository_goldenPath() throws Exception {
-            TaskDao TASK_DAO  = new TaskDao(TASK_DTO);
             TaskDto actual = taskService.createTask(USER_ID, TASK_REQUEST);
-            verify(taskRepository).save(TASK_DAO);
+            verify(taskRepository).save(any(TaskDao.class));
         }
     }
 }
