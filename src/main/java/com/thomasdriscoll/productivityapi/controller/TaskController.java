@@ -25,10 +25,19 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<DriscollResponse<TaskDto>> createTask(
+    public ResponseEntity<DriscollResponse<TaskDto>> createTask (
             @PathVariable String userId,
             @RequestBody TaskRequest newTaskRequest) throws DriscollException {
         userService.validateUser(userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new DriscollResponse<TaskDto>(HttpStatus.CREATED.value(), taskService.createTask(userId, newTaskRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new DriscollResponse<>(HttpStatus.CREATED.value(), taskService.createTask(userId, newTaskRequest)));
+    }
+
+    @GetMapping("/{taskId}")
+    public ResponseEntity<DriscollResponse<TaskDto>> getTaskById (
+            @PathVariable String userId,
+            @PathVariable Long taskId
+    ) throws DriscollException {
+        userService.validateUser(userId); // 404 if no such user
+        return ResponseEntity.ok(new DriscollResponse<>(HttpStatus.OK.value(), taskService.getTaskById(userId, taskId)));
     }
 }

@@ -1,6 +1,5 @@
 package com.thomasdriscoll.productivityapi.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thomasdriscoll.productivityapi.lib.enums.PriorityTask;
 import com.thomasdriscoll.productivityapi.lib.enums.StatusType;
@@ -30,7 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -53,6 +52,8 @@ class TaskControllerTest {
     private final Integer ESTIMATED_TIME_TASK = 75;
     private final String TASK_TYPE = TypeTask.INTELLECTUAL.getType();
     private final String STATUS_TYPE = StatusType.BACKLOG.getStatus();
+    private final Long TASK_ID = 1234567890L;
+    private final Long BAD_TASK_ID = 9876543210L;
 
     private final TaskRequest TASK_REQUEST = TaskRequest.builder()
             .titleTask(TITLE_TASK)
@@ -100,15 +101,11 @@ class TaskControllerTest {
             .statusType(StatusType.BACKLOG)
             .build();
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Nested
     @DisplayName("Create Task tests")
     class CreateTaskDtoRequestTests {
-        ObjectMapper mapper = new ObjectMapper();
-
-
-        CreateTaskDtoRequestTests() throws JsonProcessingException {
-        }
-
         @Test
         public void givenTask_whenCreateTask_thenReturn201() throws Exception {
             String request = mapper.writeValueAsString(TASK_REQUEST);
@@ -191,6 +188,57 @@ class TaskControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request))
                     .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Task By ID tests")
+    class GetTaskByIdTests {
+        @Test
+        public void givenUserIdAndTaskId_whenGetTaskById_thenReturn200() throws Exception {
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(HttpStatus.OK.value(), TASK_DTO));
+
+            when(taskService.getTaskById(USER_ID, TASK_ID)).thenReturn(TASK_DTO);
+
+            MvcResult result = mockMvc.perform(get(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID))
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+            String actual = result.getResponse().getContentAsString();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void givenUserIdAndTaskId_whenInvalidUser_thenReturn404() throws Exception {
+            DriscollException exception = new DriscollException(UserExceptions.USER_NOT_FOUND.getStatus(), UserExceptions.USER_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            //Mock what needs to be mocked
+            doThrow(exception).when(userService).validateUser(BAD_USER);
+
+            //Do test
+            MvcResult result = mockMvc.perform(get(String.format("/users/%s/tasks/%s", BAD_USER, TASK_ID))
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            //Assert if test worked
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
+        public void givenUserIdAndTaskId_whenTaskIdNotFound_thenReturn404() throws Exception {
+            DriscollException exception = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            when(taskService.getTaskById(USER_ID, BAD_TASK_ID)).thenThrow(exception);
+
+            MvcResult result = mockMvc.perform(get(String.format("/users/%s/tasks/%s", USER_ID, BAD_TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound())
                     .andReturn();
 
             assertEquals(expected, result.getResponse().getContentAsString());

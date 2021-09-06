@@ -26,6 +26,10 @@ public class TaskService {
         return dto;
     }
 
+    public TaskDto getTaskById(String userId, Long taskId) throws DriscollException {
+        return null;
+    }
+
     private TaskDto validateTask(String userId, TaskRequest request) throws DriscollException {
         // check priorities
         PriorityTask priority;
