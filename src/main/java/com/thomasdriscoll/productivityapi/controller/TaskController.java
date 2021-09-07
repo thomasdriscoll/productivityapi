@@ -40,4 +40,14 @@ public class TaskController {
         userService.validateUser(userId); // 404 if no such user
         return ResponseEntity.ok(new DriscollResponse<>(HttpStatus.OK.value(), taskService.getTaskById(userId, taskId)));
     }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<DriscollResponse<TaskDto>> updateTask (
+            @PathVariable String userId,
+            @PathVariable Long taskId,
+            @RequestBody TaskRequest updateRequest
+    ) throws DriscollException {
+        userService.validateUser(userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new DriscollResponse<>(HttpStatus.CREATED.value(), taskService.updateTask(userId, taskId, updateRequest)));
+    }
 }

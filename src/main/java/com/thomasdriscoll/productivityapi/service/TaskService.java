@@ -36,6 +36,10 @@ public class TaskService {
         return new TaskDto(dao.get());
     }
 
+    public TaskDto updateTask(String userId, Long taskId, TaskRequest updateRequest) throws DriscollException {
+        return null;
+    }
+
     private TaskDto validateTask(String userId, TaskRequest request) throws DriscollException {
         // check priorities
         PriorityTask priority;

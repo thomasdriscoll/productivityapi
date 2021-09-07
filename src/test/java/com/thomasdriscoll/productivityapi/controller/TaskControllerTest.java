@@ -244,4 +244,95 @@ class TaskControllerTest {
             assertEquals(expected, result.getResponse().getContentAsString());
         }
     }
+
+    @Nested
+    @DisplayName("Update Task Tests")
+    class UpdateTestTests {
+        @Test
+        public void givenTask_whenUpdateTask_thenReturn201() throws Exception {
+            String request = mapper.writeValueAsString(TASK_REQUEST);
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(HttpStatus.CREATED.value(), TASK_DTO));
+
+            when(taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST)).thenReturn(TASK_DTO);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isCreated())
+                    .andReturn();
+            String actual = result.getResponse().getContentAsString();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void givenTask_whenInvalidUser_return404() throws Exception {
+            String request = mapper.writeValueAsString(TASK_REQUEST);
+            DriscollException exception = new DriscollException(UserExceptions.USER_NOT_FOUND.getStatus(), UserExceptions.USER_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            //Mock what needs to be mocked
+            doThrow(exception).when(userService).validateUser(BAD_USER);
+
+            //Do test
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", BAD_USER, TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isNotFound())
+                    .andReturn();
+
+            //Assert if test worked
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
+        public void givenTask_whenInvalidPriority_return400() throws Exception {
+            String request = mapper.writeValueAsString(TASK_REQUEST_INVALID_PRIORITY);
+            DriscollException exception = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            when(taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_PRIORITY)).thenThrow(exception);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
+        public void givenTask_whenInvalidType_return400() throws Exception {
+            String request = mapper.writeValueAsString(TASK_REQUEST_INVALID_TYPE);
+            DriscollException exception = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            when(taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_TYPE)).thenThrow(exception);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
+        public void givenTask_whenInvalidStatus_return400() throws Exception {
+            String request = mapper.writeValueAsString(TASK_REQUEST_INVALID_STATUS);
+            DriscollException exception = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            when(taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_STATUS)).thenThrow(exception);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+    }
 }
