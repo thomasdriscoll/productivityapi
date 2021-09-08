@@ -37,6 +37,8 @@ public class TaskService {
     }
 
     public TaskDto updateTask(String userId, Long taskId, TaskRequest updateRequest) throws DriscollException {
+        TaskDto dto = validateTask(userId, updateRequest);
+        Optional<TaskDao> dao = task
         return null;
     }
 

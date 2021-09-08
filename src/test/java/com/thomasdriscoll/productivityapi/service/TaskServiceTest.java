@@ -165,4 +165,68 @@ class TaskServiceTest {
             assertEquals(excepted.getMessage(), actual.getMessage());
         }
     }
+
+    @Nested
+    @DisplayName("Update Tasks Tests")
+    class UpdateTasksTests {
+        @Test
+        public void validateTaskRequest_goldenPath() throws Exception {
+            when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.of(TASK_DAO));
+            when(taskRepository.save(TASK_DAO)).thenReturn(TASK_DAO);
+            TaskDto actual = taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST);
+            assertEquals(TASK_DTO, actual);
+        }
+
+        @Test
+        public void validateTaskRequest_throwsOnPriority() throws Exception {
+            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_PRIORITY));
+
+            // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
+            // Good enough for our purposes
+            assertEquals(excepted.getStatus(), actual.getStatus());
+            assertEquals(excepted.getMessage(), actual.getMessage());
+        }
+
+        @Test
+        public void validateTaskRequest_throwsOnTaskType() throws Exception {
+            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_TYPE));
+
+            // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
+            // Good enough for our purposes
+            assertEquals(excepted.getStatus(), actual.getStatus());
+            assertEquals(excepted.getMessage(), actual.getMessage());
+        }
+
+        @Test
+        public void validateTaskRequest_throwsOnStatusType() throws Exception {
+            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_STATUS));
+
+            // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
+            // Good enough for our purposes
+            assertEquals(excepted.getStatus(), actual.getStatus());
+            assertEquals(excepted.getMessage(), actual.getMessage());
+        }
+
+        @Test
+        public void validTask_saveToRepository_goldenPath() throws Exception {
+            TaskDto actual = taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST);
+            verify(taskRepository).findByUserIdAndTaskId(USER_ID, TASK_ID);
+            verify(taskRepository).save(any(TaskDao.class));
+        }
+
+        @Test
+        public void invalidTaskId_throw404Error() throws Exception {
+            DriscollException excepted = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+
+            when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.empty());
+
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, BAD_TASK_ID, TASK_REQUEST));
+
+            assertEquals(excepted.getStatus(), actual.getStatus());
+            assertEquals(excepted.getMessage(), actual.getMessage());
+        }
+    }
 }
