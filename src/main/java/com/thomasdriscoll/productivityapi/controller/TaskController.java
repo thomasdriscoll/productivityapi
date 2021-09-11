@@ -50,4 +50,14 @@ public class TaskController {
         userService.validateUser(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(new DriscollResponse<>(HttpStatus.CREATED.value(), taskService.updateTask(userId, taskId, updateRequest)));
     }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<DriscollResponse<TaskDto>> deleteTask (
+            @PathVariable String userId,
+            @PathVariable Long taskId
+    ) throws DriscollException {
+        userService.validateUser(userId);
+        taskService.deleteTask(userId, taskId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new DriscollResponse<>(HttpStatus.NO_CONTENT.value(), null));
+    }
 }

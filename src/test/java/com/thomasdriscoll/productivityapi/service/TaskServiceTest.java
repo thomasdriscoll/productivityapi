@@ -233,4 +233,26 @@ class TaskServiceTest {
             assertEquals(excepted.getMessage(), actual.getMessage());
         }
     }
+
+    @Nested
+    @DisplayName("Delete Task Service tests")
+    class DeleteTaskServiceTests {
+        @Test
+        public void validTaskId_thenDelete() throws Exception {
+            taskService.deleteTask(USER_ID, TASK_ID);
+            verify(taskRepository).deleteById(TASK_ID);
+        }
+
+        @Test
+        public void invalidTaskId_throw404Error() throws Exception {
+            DriscollException excepted = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+
+            doThrow(IllegalArgumentException.class).when(taskRepository).deleteById(BAD_TASK_ID);
+
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.deleteTask(USER_ID, BAD_TASK_ID));
+
+            assertEquals(excepted.getStatus(), actual.getStatus());
+            assertEquals(excepted.getMessage(), actual.getMessage());
+        }
+    }
 }

@@ -285,6 +285,23 @@ class TaskControllerTest {
         }
 
         @Test
+        public void givenTask_whenTaskNotFound_return404() throws Exception {
+            String request = mapper.writeValueAsString(TASK_REQUEST);
+            DriscollException exception = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            doThrow(exception).when(taskService).updateTask(USER_ID, BAD_TASK_ID, TASK_REQUEST);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", USER_ID, BAD_TASK_ID))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(request))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
         public void givenTask_whenInvalidPriority_return400() throws Exception {
             String request = mapper.writeValueAsString(TASK_REQUEST_INVALID_PRIORITY);
             DriscollException exception = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
@@ -330,6 +347,56 @@ class TaskControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request))
                     .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+    }
+
+    @Nested
+    @DisplayName("Delete Task Controller tests")
+    class DeleteTaskTests {
+
+        @Test
+        public void givenTask_wheDeleteTask_thenReturn204() throws Exception {
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(HttpStatus.NO_CONTENT.value(), null));
+
+            MvcResult result = mockMvc.perform(delete(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNoContent())
+                    .andReturn();
+            String actual = result.getResponse().getContentAsString();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void givenTask_whenInvalidUser_return404() throws Exception {
+            DriscollException exception = new DriscollException(UserExceptions.USER_NOT_FOUND.getStatus(), UserExceptions.USER_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            //Mock what needs to be mocked
+            doThrow(exception).when(userService).validateUser(BAD_USER);
+
+            //Do test
+            MvcResult result = mockMvc.perform(delete(String.format("/users/%s/tasks/%s", BAD_USER, TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound())
+                    .andReturn();
+
+            //Assert if test worked
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
+        public void givenTask_whenTaskNotFound_return404() throws Exception {
+            DriscollException exception = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            doThrow(exception).when(taskService).deleteTask(USER_ID, BAD_TASK_ID);
+
+            MvcResult result = mockMvc.perform(delete(String.format("/users/%s/tasks/%s", USER_ID, BAD_TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound())
                     .andReturn();
 
             assertEquals(expected, result.getResponse().getContentAsString());

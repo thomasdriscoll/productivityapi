@@ -48,6 +48,15 @@ public class TaskService {
         return new TaskDto(dao);
     }
 
+    public void deleteTask(String userId, Long taskId) throws DriscollException {
+        try {
+            taskRepository.deleteById(taskId);
+        } catch (IllegalArgumentException ex) {
+            throw new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+        }
+
+    }
+
     private TaskDto validateTask(String userId, TaskRequest request) throws DriscollException {
         // check priorities
         PriorityTask priority;
