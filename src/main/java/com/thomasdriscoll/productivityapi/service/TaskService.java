@@ -38,8 +38,14 @@ public class TaskService {
 
     public TaskDto updateTask(String userId, Long taskId, TaskRequest updateRequest) throws DriscollException {
         TaskDto dto = validateTask(userId, updateRequest);
-        Optional<TaskDao> dao = task
-        return null;
+        Optional<TaskDao> optionalTaskDao = taskRepository.findByUserIdAndTaskId(userId, taskId);
+        if(optionalTaskDao.isEmpty()) {
+            throw new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+        }
+        TaskDao dao = optionalTaskDao.get();
+        dao.updateFromDto(dto);
+        taskRepository.save(dao);
+        return new TaskDto(dao);
     }
 
     private TaskDto validateTask(String userId, TaskRequest request) throws DriscollException {

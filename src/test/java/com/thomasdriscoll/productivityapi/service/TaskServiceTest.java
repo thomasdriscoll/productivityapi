@@ -212,7 +212,11 @@ class TaskServiceTest {
 
         @Test
         public void validTask_saveToRepository_goldenPath() throws Exception {
+            when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.of(TASK_DAO));
+            when(taskRepository.save(TASK_DAO)).thenReturn(TASK_DAO);
+
             TaskDto actual = taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST);
+
             verify(taskRepository).findByUserIdAndTaskId(USER_ID, TASK_ID);
             verify(taskRepository).save(any(TaskDao.class));
         }

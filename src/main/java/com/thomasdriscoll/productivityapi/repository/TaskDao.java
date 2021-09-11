@@ -50,4 +50,14 @@ public class TaskDao {
         this.typeTask = dto.getTypeTask();
         this.statusType = dto.getStatusType();
     }
+
+    public void updateFromDto(TaskDto dto){
+        this.userId = dto.getUserId();
+        this.titleTask = dto.getTitleTask();
+        this.descriptionTask = dto.getDescriptionTask();
+        this.priorityTask = dto.getPriorityTask();
+        this.estimatedTimeTask = dto.getEstimatedTimeTask();
+        this.typeTask = dto.getTypeTask();
+        this.statusType = dto.getStatusType();
+    }
 }
