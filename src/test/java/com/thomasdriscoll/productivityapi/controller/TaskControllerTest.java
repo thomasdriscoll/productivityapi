@@ -356,7 +356,6 @@ class TaskControllerTest {
     @Nested
     @DisplayName("Delete Task Controller tests")
     class DeleteTaskTests {
-
         @Test
         public void givenTask_wheDeleteTask_thenReturn204() throws Exception {
             String expected = mapper.writeValueAsString(new DriscollResponse<>(HttpStatus.NO_CONTENT.value(), null));
@@ -395,6 +394,73 @@ class TaskControllerTest {
             doThrow(exception).when(taskService).deleteTask(USER_ID, BAD_TASK_ID);
 
             MvcResult result = mockMvc.perform(delete(String.format("/users/%s/tasks/%s", USER_ID, BAD_TASK_ID))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound())
+                    .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+    }
+
+    @Nested
+    @DisplayName("Update Task Status controller tests")
+    class UpdateTaskStatusTests {
+
+        @Test
+        public void givenTask_whenUpdateTask_thenReturn201() throws Exception {
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(HttpStatus.CREATED.value(), TASK_DTO));
+
+            when(taskService.updateTaskStatus(USER_ID, TASK_ID, STATUS_TYPE)).thenReturn(TASK_DTO);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s/status/%s", USER_ID, TASK_ID, STATUS_TYPE))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andReturn();
+            String actual = result.getResponse().getContentAsString();
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void givenTask_whenInvalidUser_return404() throws Exception {
+            DriscollException exception = new DriscollException(UserExceptions.USER_NOT_FOUND.getStatus(), UserExceptions.USER_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            //Mock what needs to be mocked
+            doThrow(exception).when(userService).validateUser(BAD_USER);
+
+            //Do test
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s/status/%s", BAD_USER, TASK_ID, STATUS_TYPE))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andReturn();
+
+            //Assert if test worked
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
+        public void givenTask_whenInvalidStatus_return400() throws Exception {
+            DriscollException exception = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            when(taskService.updateTaskStatus(USER_ID, TASK_ID, "junk")).thenThrow(exception);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID, "junk"))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+
+            assertEquals(expected, result.getResponse().getContentAsString());
+        }
+
+        @Test
+        public void givenTask_whenTaskNotFound_return404() throws Exception {
+            DriscollException exception = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(exception.getStatus().value(), exception.getMessage()));
+
+            doThrow(exception).when(taskService).updateTaskStatus(USER_ID, BAD_TASK_ID, STATUS_TYPE);
+
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s/status/%s", USER_ID, BAD_TASK_ID, STATUS_TYPE))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound())
                     .andReturn();

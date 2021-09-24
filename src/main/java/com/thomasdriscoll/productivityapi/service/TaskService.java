@@ -16,15 +16,16 @@ import java.util.Optional;
 
 @Service
 public class TaskService {
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     public TaskService(TaskRepository taskRepository){
         this.taskRepository = taskRepository;
     }
 
+    // Main functions -- match order of methods with TaskController for organizational purposes
     public TaskDto createTask(String userId, TaskRequest newTaskRequest) throws DriscollException {
         TaskDto dto = validateTask(userId, newTaskRequest);
-        TaskDao dao = taskRepository.save(new TaskDao(dto));
+        taskRepository.save(new TaskDao(dto));
         return dto;
     }
 
@@ -51,34 +52,30 @@ public class TaskService {
     public void deleteTask(String userId, Long taskId) throws DriscollException {
         try {
             taskRepository.deleteById(taskId);
-        } catch (IllegalArgumentException ex) {
+        } catch (Exception ex) {
             throw new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
         }
 
     }
 
+    public TaskDto updateTaskStatus (String userId, Long taskId, String status) throws DriscollException {
+        StatusType statusType = validateTaskStatus(status);
+        Optional<TaskDao> optionalTaskDao = taskRepository.findByUserIdAndTaskId(userId, taskId);
+        if(optionalTaskDao.isEmpty()){
+            throw new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+        }
+        TaskDto dto = new TaskDto(optionalTaskDao.get());
+        dto.setStatusType(statusType);
+        taskRepository.save(new TaskDao(dto));
+        return dto;
+    }
+
+    // Helper Functions
     private TaskDto validateTask(String userId, TaskRequest request) throws DriscollException {
         // check priorities
-        PriorityTask priority;
-        try {
-            priority = PriorityTask.valueOf(request.getPriorityTask());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new DriscollException(HttpStatus.BAD_REQUEST, TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
-        }
-
-        StatusType statusType;
-        try {
-            statusType = StatusType.valueOf(request.getStatusType());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new DriscollException(HttpStatus.BAD_REQUEST, TaskExceptions.INVALID_STATUS.getMessage());
-        }
-
-        TypeTask typeTask;
-        try {
-            typeTask = TypeTask.valueOf(request.getTypeTask());
-        } catch (IllegalArgumentException | NullPointerException e){
-            throw new DriscollException(HttpStatus.BAD_REQUEST, TaskExceptions.INVALID_TASK_TYPE.getMessage());
-        }
+        PriorityTask priority = validateTaskPriority(request.getPriorityTask());
+        StatusType statusType = validateTaskStatus(request.getStatusType());
+        TypeTask typeTask = validateTypeTask(request.getTypeTask());
 
         return TaskDto.builder()
                 .userId(userId)
@@ -90,5 +87,36 @@ public class TaskService {
                 .typeTask(typeTask)
                 .build();
     }
+
+    private PriorityTask validateTaskPriority(String priority) throws DriscollException {
+        PriorityTask priorityTask;
+        try {
+            priorityTask = PriorityTask.valueOf(priority);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new DriscollException(HttpStatus.BAD_REQUEST, TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
+        }
+        return priorityTask;
+    }
+
+    private StatusType validateTaskStatus(String status) throws DriscollException {
+        StatusType statusType;
+        try {
+            statusType = StatusType.valueOf(status);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new DriscollException(HttpStatus.BAD_REQUEST, TaskExceptions.INVALID_STATUS.getMessage());
+        }
+        return statusType;
+    }
+
+    private TypeTask validateTypeTask(String type) throws DriscollException {
+        TypeTask typeTask;
+        try {
+            typeTask = TypeTask.valueOf(type);
+        } catch (IllegalArgumentException | NullPointerException e){
+            throw new DriscollException(HttpStatus.BAD_REQUEST, TaskExceptions.INVALID_TASK_TYPE.getMessage());
+        }
+        return typeTask;
+    }
+
 
 }

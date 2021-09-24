@@ -105,35 +105,35 @@ class TaskServiceTest {
 
         @Test
         public void validateTaskRequest_throwsOnPriority() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.createTask(USER_ID, TASK_REQUEST_INVALID_PRIORITY));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
             // Good enough for our purposes
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
 
         @Test
         public void validateTaskRequest_throwsOnTaskType() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.createTask(USER_ID, TASK_REQUEST_INVALID_TYPE));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
             // Good enough for our purposes
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
 
         @Test
         public void validateTaskRequest_throwsOnStatusType() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.createTask(USER_ID, TASK_REQUEST_INVALID_STATUS));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
             // Good enough for our purposes
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
 
         @Test
@@ -155,14 +155,14 @@ class TaskServiceTest {
 
         @Test
         public void invalidTaskId_throw404Error() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
 
             when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.empty());
 
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.getTaskById(USER_ID, BAD_TASK_ID));
 
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
     }
 
@@ -179,35 +179,35 @@ class TaskServiceTest {
 
         @Test
         public void validateTaskRequest_throwsOnPriority() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_PRIORITY));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
             // Good enough for our purposes
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
 
         @Test
         public void validateTaskRequest_throwsOnTaskType() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_TYPE));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
             // Good enough for our purposes
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
 
         @Test
         public void validateTaskRequest_throwsOnStatusType() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_STATUS));
 
             // Note: AssertEquals does a deep assertion, i.e. it is testing if the objects are literally the same object in memory. Easiest way around this is to test contents
             // Good enough for our purposes
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
 
         @Test
@@ -223,14 +223,14 @@ class TaskServiceTest {
 
         @Test
         public void invalidTaskId_throw404Error() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+            DriscollException expected = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
 
             when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.empty());
 
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, BAD_TASK_ID, TASK_REQUEST));
 
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
     }
 
@@ -244,15 +244,59 @@ class TaskServiceTest {
         }
 
         @Test
-        public void invalidTaskId_throw404Error() throws Exception {
-            DriscollException excepted = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+        public void invalidTaskId_throw404Error() {
+            DriscollException expected = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
 
             doThrow(IllegalArgumentException.class).when(taskRepository).deleteById(BAD_TASK_ID);
 
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.deleteTask(USER_ID, BAD_TASK_ID));
 
-            assertEquals(excepted.getStatus(), actual.getStatus());
-            assertEquals(excepted.getMessage(), actual.getMessage());
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
+        }
+    }
+    
+    @Nested
+    @DisplayName("Update Task Status Tests")
+    class UpdateTaskStatusTests {
+        @Test
+        public void validTaskId_thenUpdateStatus_AndReturnDto() throws DriscollException {
+            TaskDto expected = TaskDto.builder()
+                    .userId(USER_ID)
+                    .titleTask(TITLE_TASK)
+                    .descriptionTask(DESCRIPTION_TASK)
+                    .priorityTask(PriorityTask.valueOf(PRIORITY_TASK))
+                    .estimatedTimeTask(ESTIMATED_TIME_TASK)
+                    .statusType(StatusType.valueOf(StatusType.TODO.getStatus()))
+                    .typeTask(TypeTask.valueOf(TASK_TYPE))
+                .build();
+            TaskDao expectedDao = new TaskDao(expected);
+            when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.of(TASK_DAO));
+            when(taskRepository.save(any(TaskDao.class))).thenReturn(expectedDao);
+            TaskDto actual = taskService.updateTaskStatus(USER_ID, TASK_ID, StatusType.TODO.getStatus());
+            verify(taskRepository).save(any(TaskDao.class));
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        public void invalidStatus_thenThrow400() {
+            DriscollException expected = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
+            
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTaskStatus(USER_ID, TASK_ID, "junk"));
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
+        }
+
+        @Test
+        public void invalidTaskId_thenThrow404() {
+            DriscollException expected = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
+
+            when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.empty());
+
+            DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTaskStatus(USER_ID, BAD_TASK_ID, STATUS_TYPE));
+
+            assertEquals(expected.getStatus(), actual.getStatus());
+            assertEquals(expected.getMessage(), actual.getMessage());
         }
     }
 }
