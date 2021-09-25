@@ -431,7 +431,7 @@ class TaskControllerTest {
             //Do test
             MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s/status/%s", BAD_USER, TASK_ID, STATUS_TYPE))
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isCreated())
+                    .andExpect(status().isNotFound())
                     .andReturn();
 
             //Assert if test worked
@@ -445,7 +445,7 @@ class TaskControllerTest {
 
             when(taskService.updateTaskStatus(USER_ID, TASK_ID, "junk")).thenThrow(exception);
 
-            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s", USER_ID, TASK_ID, "junk"))
+            MvcResult result = mockMvc.perform(put(String.format("/users/%s/tasks/%s/status/%s", USER_ID, TASK_ID, "junk"))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andReturn();
