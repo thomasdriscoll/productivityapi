@@ -6,11 +6,11 @@ servers:
   - url: 'http://localhost:8018'
     description: Generated server url
 paths:
-  '/user/{userId}/board':
+  '/user/{userId}/board/tasks':
     get:
       tags:
         - board-controller
-      operationId: getBoard
+      operationId: getTasksOnBoard
       parameters:
         - name: userId
           in: path
@@ -155,10 +155,10 @@ components:
     Board:
       type: object
       properties:
-        tasks:
+        board:
           type: array
           items:
-            $ref: '#/components/schemas/Task'
+            $ref: '#/components/schemas/ListOfTasks'
     BoardResponse:
       type: object
       properties:
@@ -176,6 +176,13 @@ components:
         data:
           type: string
           example: null
+    ListOfTasks:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListOfTasks'
     Task:
       type: object
       properties:

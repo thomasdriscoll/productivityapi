@@ -12,6 +12,7 @@ import com.thomasdriscoll.productivityapi.repository.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -68,6 +69,11 @@ public class TaskService {
         dto.setStatusType(statusType);
         taskRepository.save(new TaskDao(dto));
         return dto;
+    }
+
+    public List<TaskDto> getTasksOnBoard(String userId) throws DriscollException {
+        List<TaskDao> daos = taskRepository.findTasksOnBoard(userId, StatusType.TODO, StatusType.INPROGRESS, StatusType.BLOCKED, StatusType.DONE);
+        return null;
     }
 
     // Helper Functions

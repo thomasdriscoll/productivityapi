@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="t_tasks")
 @Getter
+
 public class TaskDao {
     @Id
     @GeneratedValue
@@ -51,6 +52,17 @@ public class TaskDao {
         this.statusType = dto.getStatusType();
     }
 
+    public TaskDao (TaskDao dao) {
+        this.taskId = dao.getTaskId();
+        this.userId = dao.getUserId();
+        this.titleTask = dao.getTitleTask();
+        this.descriptionTask = dao.getDescriptionTask();
+        this.priorityTask = dao.getPriorityTask();
+        this.estimatedTimeTask = dao.getEstimatedTimeTask();
+        this.typeTask = dao.getTypeTask();
+        this.statusType = dao.getStatusType();
+    }
+
     public void updateFromDto(TaskDto dto){
         this.userId = dto.getUserId();
         this.titleTask = dto.getTitleTask();
@@ -59,5 +71,9 @@ public class TaskDao {
         this.estimatedTimeTask = dto.getEstimatedTimeTask();
         this.typeTask = dto.getTypeTask();
         this.statusType = dto.getStatusType();
+    }
+
+    public void setStatusType(StatusType statusType) {
+        this.statusType = statusType;
     }
 }

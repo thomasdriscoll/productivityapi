@@ -9,6 +9,7 @@ import com.thomasdriscoll.productivityapi.lib.models.TaskDto;
 import com.thomasdriscoll.productivityapi.lib.models.TaskRequest;
 import com.thomasdriscoll.productivityapi.repository.TaskDao;
 import com.thomasdriscoll.productivityapi.repository.TaskRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +37,6 @@ class TaskServiceTest {
     TaskService taskService;
 
     private final String USER_ID = "userId";
-    private final String BAD_USER = "badUser";
     private final String TITLE_TASK = "Create template Go app";
     private final String DESCRIPTION_TASK = "Want to create a Go app that I can reuse over and over to quickly get a project up and running";
     private final String PRIORITY_TASK = PriorityTask.HIGH.getPriority();
@@ -104,7 +106,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void validateTaskRequest_throwsOnPriority() throws Exception {
+        public void validateTaskRequest_throwsOnPriority() {
             DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.createTask(USER_ID, TASK_REQUEST_INVALID_PRIORITY));
 
@@ -115,7 +117,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void validateTaskRequest_throwsOnTaskType() throws Exception {
+        public void validateTaskRequest_throwsOnTaskType() {
             DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.createTask(USER_ID, TASK_REQUEST_INVALID_TYPE));
 
@@ -126,7 +128,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void validateTaskRequest_throwsOnStatusType() throws Exception {
+        public void validateTaskRequest_throwsOnStatusType() {
             DriscollException expected = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.createTask(USER_ID, TASK_REQUEST_INVALID_STATUS));
 
@@ -154,7 +156,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void invalidTaskId_throw404Error() throws Exception {
+        public void invalidTaskId_throw404Error() {
             DriscollException expected = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
 
             when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.empty());
@@ -178,7 +180,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void validateTaskRequest_throwsOnPriority() throws Exception {
+        public void validateTaskRequest_throwsOnPriority() {
             DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_PRIORITY.getStatus(), TaskExceptions.INVALID_TASK_PRIORITY.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_PRIORITY));
 
@@ -189,7 +191,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void validateTaskRequest_throwsOnTaskType() throws Exception {
+        public void validateTaskRequest_throwsOnTaskType() {
             DriscollException expected = new DriscollException(TaskExceptions.INVALID_TASK_TYPE.getStatus(), TaskExceptions.INVALID_TASK_TYPE.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_TYPE));
 
@@ -200,7 +202,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void validateTaskRequest_throwsOnStatusType() throws Exception {
+        public void validateTaskRequest_throwsOnStatusType() {
             DriscollException expected = new DriscollException(TaskExceptions.INVALID_STATUS.getStatus(), TaskExceptions.INVALID_STATUS.getMessage());
             DriscollException actual = assertThrows(DriscollException.class, () -> taskService.updateTask(USER_ID, TASK_ID, TASK_REQUEST_INVALID_STATUS));
 
@@ -222,7 +224,7 @@ class TaskServiceTest {
         }
 
         @Test
-        public void invalidTaskId_throw404Error() throws Exception {
+        public void invalidTaskId_throw404Error() {
             DriscollException expected = new DriscollException(TaskExceptions.TASK_ID_NOT_FOUND.getStatus(), TaskExceptions.TASK_ID_NOT_FOUND.getMessage());
 
             when(taskRepository.findByUserIdAndTaskId(USER_ID, TASK_ID)).thenReturn(Optional.empty());
@@ -297,6 +299,104 @@ class TaskServiceTest {
 
             assertEquals(expected.getStatus(), actual.getStatus());
             assertEquals(expected.getMessage(), actual.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Tasks On Board Tests")
+    class GetTasksOnBoardTests {
+        TaskDao toDoDao = new TaskDao(TASK_DAO);
+        TaskDao inProgressDao = new TaskDao(TASK_DAO);
+        TaskDao blockedDao = new TaskDao(TASK_DAO);
+        TaskDao doneDao = new TaskDao(TASK_DAO);
+        List<TaskDao> daos;
+        List<TaskDto> dtos;
+
+        @BeforeEach
+        public void setup() {
+            // Set up variables
+            toDoDao.setStatusType(StatusType.TODO);
+            inProgressDao.setStatusType(StatusType.INPROGRESS);
+            blockedDao.setStatusType(StatusType.BLOCKED);
+            doneDao.setStatusType(StatusType.DONE);
+        }
+
+        @Test
+        public void getTasksOnBoard_returnToDoType() throws DriscollException {
+            daos = List.of(toDoDao);
+            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO)).thenReturn(daos);
+
+            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+
+            assertEquals(1, dtos.size());
+            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+        }
+
+        @Test
+        public void getTasksOnBoard_returnsInProgressType() throws DriscollException {
+            daos = List.of(inProgressDao);
+            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.INPROGRESS)).thenReturn(daos);
+
+            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+
+            assertEquals(1, dtos.size());
+            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+        }
+
+        @Test
+        public void getTasksOnBoard_returnBlocked() throws DriscollException {
+            daos = List.of(blockedDao);
+            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.BLOCKED)).thenReturn(daos);
+
+            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+
+            assertEquals(1, dtos.size());
+            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+        }
+
+        @Test
+        public void getTasksOnBoard_returnDone() throws DriscollException {
+            daos = List.of(doneDao);
+            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.DONE)).thenReturn(daos);
+
+            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+
+            assertEquals(1, dtos.size());
+            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+        }
+
+        @Test
+        public void getTasksOnBoard_returnTasksOfAllTypes() throws DriscollException {
+            daos = List.of(TASK_DAO, inProgressDao, toDoDao, blockedDao);
+            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO, StatusType.INPROGRESS, StatusType.BLOCKED, StatusType.DONE)).thenReturn(daos);
+
+            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+
+            assertEquals(4, dtos.size());
+            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+            assertEquals(dtos.get(1).getStatusType(), actualDtos.get(1).getStatusType());
+            assertEquals(dtos.get(2).getStatusType(), actualDtos.get(2).getStatusType());
+            assertEquals(dtos.get(3).getStatusType(), actualDtos.get(3).getStatusType());
+
+        }
+
+        @Test
+        public void getTasksOnBoard_returnNoTasks() throws DriscollException {
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO, StatusType.INPROGRESS, StatusType.BLOCKED, StatusType.DONE)).thenReturn(List.of());
+
+            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+
+            assertEquals(0, dtos.size());
         }
     }
 }
