@@ -19,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -311,6 +311,7 @@ class TaskServiceTest {
         TaskDao doneDao = new TaskDao(TASK_DAO);
         List<TaskDao> daos;
         List<TaskDto> dtos;
+        List<List<TaskDto>> boardResponse;
 
         @BeforeEach
         public void setup() {
@@ -319,84 +320,106 @@ class TaskServiceTest {
             inProgressDao.setStatusType(StatusType.INPROGRESS);
             blockedDao.setStatusType(StatusType.BLOCKED);
             doneDao.setStatusType(StatusType.DONE);
+
+            // Set up mocks
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO)).thenReturn(List.of());
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.INPROGRESS)).thenReturn(List.of());
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.BLOCKED)).thenReturn(List.of());
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.DONE)).thenReturn(List.of());
         }
 
         @Test
         public void getTasksOnBoard_returnToDoType() throws DriscollException {
             daos = List.of(toDoDao);
-            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+            dtos = daos.stream().map(TaskDto::new).toList();
+            boardResponse = List.of(dtos);
 
             when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO)).thenReturn(daos);
 
-            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+            List<List<TaskDto>> actualDtos = taskService.getTasksOnBoard(USER_ID);
 
             assertEquals(1, dtos.size());
-            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+            assertEquals(boardResponse.get(0).get(0).getStatusType(), actualDtos.get(0).get(0).getStatusType());
         }
 
         @Test
         public void getTasksOnBoard_returnsInProgressType() throws DriscollException {
             daos = List.of(inProgressDao);
-            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+            dtos = daos.stream().map(TaskDto::new).toList();
+            boardResponse = List.of(dtos);
+
 
             when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.INPROGRESS)).thenReturn(daos);
 
-            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+            List<List<TaskDto>> actualDtos = taskService.getTasksOnBoard(USER_ID);
 
             assertEquals(1, dtos.size());
-            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+            assertEquals(boardResponse.get(0).get(0).getStatusType(), actualDtos.get(1).get(0).getStatusType());
         }
 
         @Test
         public void getTasksOnBoard_returnBlocked() throws DriscollException {
             daos = List.of(blockedDao);
-            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+            dtos = daos.stream().map(TaskDto::new).toList();
+            boardResponse = List.of(dtos);
+
 
             when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.BLOCKED)).thenReturn(daos);
 
-            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+            List<List<TaskDto>> actualDtos = taskService.getTasksOnBoard(USER_ID);
 
             assertEquals(1, dtos.size());
-            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+            assertEquals(boardResponse.get(0).get(0).getStatusType(), actualDtos.get(2).get(0).getStatusType());
         }
 
         @Test
         public void getTasksOnBoard_returnDone() throws DriscollException {
             daos = List.of(doneDao);
-            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+            dtos = daos.stream().map(TaskDto::new).toList();
+            boardResponse = List.of(dtos);
+
 
             when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.DONE)).thenReturn(daos);
 
-            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+            List<List<TaskDto>> actualDtos = taskService.getTasksOnBoard(USER_ID);
 
             assertEquals(1, dtos.size());
-            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
+            assertEquals(boardResponse.get(0).get(0).getStatusType(), actualDtos.get(3).get(0).getStatusType());
         }
 
         @Test
         public void getTasksOnBoard_returnTasksOfAllTypes() throws DriscollException {
-            daos = List.of(TASK_DAO, inProgressDao, toDoDao, blockedDao);
-            dtos = (List<TaskDto>) daos.stream().map(TaskDto::new);
+            List<TaskDao> toDoDaos = List.of(toDoDao);
+            List<TaskDao> inProgressDaos = List.of(inProgressDao);
+            List<TaskDao> blockedDaos = List.of(blockedDao);
+            List<TaskDao> doneDaos = List.of(doneDao);
+            boardResponse = List.of(List.of(new TaskDto(toDoDao)), List.of(new TaskDto(inProgressDao)), List.of(new TaskDto(blockedDao)), List.of(new TaskDto(doneDao)));
 
-            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO, StatusType.INPROGRESS, StatusType.BLOCKED, StatusType.DONE)).thenReturn(daos);
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO)).thenReturn(toDoDaos);
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.INPROGRESS)).thenReturn(inProgressDaos);
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.BLOCKED)).thenReturn(blockedDaos);
+            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.DONE)).thenReturn(doneDaos);
 
-            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+            List<List<TaskDto>> actualDtos = taskService.getTasksOnBoard(USER_ID);
 
-            assertEquals(4, dtos.size());
-            assertEquals(dtos.get(0).getStatusType(), actualDtos.get(0).getStatusType());
-            assertEquals(dtos.get(1).getStatusType(), actualDtos.get(1).getStatusType());
-            assertEquals(dtos.get(2).getStatusType(), actualDtos.get(2).getStatusType());
-            assertEquals(dtos.get(3).getStatusType(), actualDtos.get(3).getStatusType());
+            assertEquals(4, boardResponse.size());
+            assertEquals(boardResponse.get(0).get(0).getStatusType(), actualDtos.get(0).get(0).getStatusType());
+            assertEquals(boardResponse.get(1).get(0).getStatusType(), actualDtos.get(1).get(0).getStatusType());
+            assertEquals(boardResponse.get(2).get(0).getStatusType(), actualDtos.get(2).get(0).getStatusType());
+            assertEquals(boardResponse.get(3).get(0).getStatusType(), actualDtos.get(3).get(0).getStatusType());
 
         }
 
         @Test
         public void getTasksOnBoard_returnNoTasks() throws DriscollException {
-            when(taskRepository.findByUserIdAndStatusType(USER_ID, StatusType.TODO, StatusType.INPROGRESS, StatusType.BLOCKED, StatusType.DONE)).thenReturn(List.of());
 
-            List<TaskDto> actualDtos = taskService.getTasksOnBoard(USER_ID);
+            List<List<TaskDto>> actualDtos = taskService.getTasksOnBoard(USER_ID);
 
-            assertEquals(0, dtos.size());
+            assertEquals(4, actualDtos.size());
+            assertEquals(0, actualDtos.get(0).size());
+            assertEquals(0, actualDtos.get(1).size());
+            assertEquals(0, actualDtos.get(2).size());
+            assertEquals(0, actualDtos.get(3).size());
         }
     }
 }

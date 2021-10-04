@@ -68,9 +68,9 @@ class BoardControllerTest {
     class GetTasksOnBoard {
         @Test
         public void givenUserId_whenGetTasksOnBoard_thenReturn200() throws Exception {
-            String expected = mapper.writeValueAsString(new DriscollResponse<>(HttpStatus.OK.value(), List.of(TASK_DTO)));
+            String expected = mapper.writeValueAsString(new DriscollResponse<>(HttpStatus.OK.value(), List.of(List.of(TASK_DTO))));
 
-            when(taskService.getTasksOnBoard(USER_ID)).thenReturn(List.of(TASK_DTO));
+            when(taskService.getTasksOnBoard(USER_ID)).thenReturn(List.of(List.of(TASK_DTO)));
 
             MvcResult result = mockMvc.perform(get(String.format("/users/%s/board/tasks", USER_ID))
                     .contentType(MediaType.APPLICATION_JSON))

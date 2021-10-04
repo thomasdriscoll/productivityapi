@@ -8,7 +8,8 @@ public enum StatusType {
     TODO("TODO"),
     INPROGRESS ("INPROGRESS"),
     BLOCKED ("BLOCKED"),
-    DONE ("DONE");
+    DONE ("DONE"),
+    ARCHIVED("ARCHIVED");
 
     private final String status;
 

@@ -30,7 +30,7 @@ public class BoardController {
     }
 
     @GetMapping("/tasks")
-    public ResponseEntity<DriscollResponse<List<TaskDto>>> getTasksOnBoard(@PathVariable String userId) throws DriscollException {
+    public ResponseEntity<DriscollResponse<List<List<TaskDto>>>> getTasksOnBoard(@PathVariable String userId) throws DriscollException {
         userService.validateUser(userId);
         return ResponseEntity.ok(new DriscollResponse<>(HttpStatus.OK.value(), taskService.getTasksOnBoard(userId)));
     }

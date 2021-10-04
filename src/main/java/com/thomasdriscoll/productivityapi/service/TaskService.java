@@ -12,8 +12,10 @@ import com.thomasdriscoll.productivityapi.repository.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class TaskService {
@@ -71,9 +73,27 @@ public class TaskService {
         return dto;
     }
 
-    public List<TaskDto> getTasksOnBoard(String userId) throws DriscollException {
-        List<TaskDao> daos = taskRepository.findTasksOnBoard(userId, StatusType.TODO, StatusType.INPROGRESS, StatusType.BLOCKED, StatusType.DONE);
-        return null;
+    public List<List<TaskDto>> getTasksOnBoard(String userId) throws DriscollException {
+        List<List<TaskDto>> dtos = new ArrayList<>();
+        // Contract: Order of statuses -- Backlog, To-Do, In-Progress, Blocked, Done, Archived
+        // Board consists of To-Do, In-Progress, Blocked, Done
+        List<TaskDao> toDo = taskRepository.findByUserIdAndStatusType(userId, StatusType.TODO);
+        List<TaskDto> toDoDtos = convertListOfTaskDaoToTaskDto(toDo);
+        dtos.add(toDoDtos);
+
+        List<TaskDao> inProgress = taskRepository.findByUserIdAndStatusType(userId, StatusType.INPROGRESS);
+        List<TaskDto> inProgressDtos = convertListOfTaskDaoToTaskDto(inProgress);
+        dtos.add(inProgressDtos);
+
+        List<TaskDao> blocked = taskRepository.findByUserIdAndStatusType(userId, StatusType.BLOCKED);
+        List<TaskDto> blockedDtos = convertListOfTaskDaoToTaskDto(blocked);
+        dtos.add(blockedDtos);
+
+        List<TaskDao> done = taskRepository.findByUserIdAndStatusType(userId, StatusType.DONE);
+        List<TaskDto> doneDtos = convertListOfTaskDaoToTaskDto(done);
+        dtos.add(doneDtos);
+
+        return dtos;
     }
 
     // Helper Functions
@@ -122,6 +142,10 @@ public class TaskService {
             throw new DriscollException(HttpStatus.BAD_REQUEST, TaskExceptions.INVALID_TASK_TYPE.getMessage());
         }
         return typeTask;
+    }
+
+    private List<TaskDto> convertListOfTaskDaoToTaskDto(List<TaskDao> daos) {
+        return daos.stream().map(TaskDto::new).toList();
     }
 
 
